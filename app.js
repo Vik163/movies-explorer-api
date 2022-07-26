@@ -56,7 +56,6 @@ app.use('*', (req, res, next) => {
 app.use(errors());
 app.use(handleErrors);
 
-// eslint-disable-next-line consistent-return
 app.use((err, req, res, next) => {
   if (err.statusCode) {
     return res.status(err.statusCode).send({ message: err.message });
@@ -66,7 +65,7 @@ app.use((err, req, res, next) => {
 
   res.status(500).send({ message: 'Что-то пошло не так' });
 
-  next();
+  return next();
 });
 
 app.listen(PORT, () => {
