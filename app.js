@@ -7,12 +7,11 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-// const { createUser, login } = require('./controllers/users');
 const index = require('./routes/index');
 const handleErrors = require('./middlewares/handleErrors');
 const ErrorNotFound = require('./errors/notFound');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 
 const app = express();
 
@@ -27,8 +26,8 @@ const options = {
   origin: [
     'https://localhost:3000',
     'http://localhost:3000',
-    'http://vik163.student.nomoredomains.sbs',
-    'https://vik163.student.nomoredomains.sbs',
+    'http://vik.diplom.nomoredomains.xyz',
+    'https://vik.diplom.nomoredomains.xyz',
   ],
   credentials: true, // эта опция позволяет устанавливать куки
 };
