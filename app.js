@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
+const helmet = require('helmet');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const index = require('./routes/index');
@@ -33,6 +34,7 @@ const options = {
 };
 
 app.use('*', cors(options));
+app.use(helmet());
 
 app.use(requestLogger);
 
