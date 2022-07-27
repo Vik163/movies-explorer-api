@@ -9,8 +9,6 @@ const helmet = require('helmet');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const index = require('./routes/index');
-const handleErrors = require('./middlewares/handleErrors');
-const ErrorNotFound = require('./errors/notFound');
 
 const { PORT = 3001 } = process.env;
 
@@ -38,35 +36,12 @@ app.use(helmet());
 
 app.use(requestLogger);
 
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
-
 app.use(cookieParser());
 app.use(index);
 
 app.use(errorLogger);
 
-app.use('*', (req, res, next) => {
-  next(new ErrorNotFound('Маршрут не найден'));
-});
-
 app.use(errors());
-app.use(handleErrors);
-
-app.use((err, req, res, next) => {
-  if (err.statusCode) {
-    return res.status(err.statusCode).send({ message: err.message });
-  }
-
-  console.error(err.stack);
-
-  res.status(500).send({ message: 'Что-то пошло не так' });
-
-  return next();
-});
 
 app.listen(PORT, () => {
 });
