@@ -1,18 +1,13 @@
 const Movie = require('../models/movie');
-
-function addError(res, card) {
-  if ((res.statusCode === 200 && !card)) {
-    const err = 'error';
-    throw err;
-  }
-}
+const ErrorNotFound = require('../errors/notFound');
+const ErrorOwnerId = require('../errors/errorOwnerId');
 
 module.exports.getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
     .then((cards) => {
       res.send(cards);
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 module.exports.createMovies = (req, res, next) => {
@@ -45,24 +40,23 @@ module.exports.createMovies = (req, res, next) => {
     owner: req.user._id,
   })
     .then((card) => res.send(card))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 module.exports.deleteMovies = (req, res, next) => {
   Movie.findOne({ _id: req.params._id })
     .then((card) => {
-      if (!card) {
-        addError(res, card);
+      if ((res.statusCode === 200 && !card)) {
+        throw new ErrorNotFound('Карточка или пользователь не найдены');
       }
       return Movie.findOneAndRemove({ _id: req.params._id, owner: req.user._id })
         .populate('owner')
         .then((cardOwnerId) => {
           if (cardOwnerId === null) {
-            const err = 'errorOwnerId';
-            throw err;
+            throw new ErrorOwnerId('Попытка удалить чужую карточку');
           }
           res.send(card);
         });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };

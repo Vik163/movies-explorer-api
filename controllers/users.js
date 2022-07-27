@@ -1,17 +1,10 @@
-require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const User = require('../models/user');
-
-function addError(res, user) {
-  if ((res.statusCode === 200 && !user)) {
-    const err = 'error';
-    throw err;
-  }
-}
+const ErrorNotFound = require('../errors/notFound');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -32,7 +25,7 @@ module.exports.createUser = (req, res, next) => {
         email: user.email,
       });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 module.exports.login = (req, res, next) => {
@@ -57,7 +50,7 @@ module.exports.login = (req, res, next) => {
         },
       });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 module.exports.signout = (req, res, next) => {
@@ -70,11 +63,13 @@ module.exports.signout = (req, res, next) => {
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      addError(res, user);
+      if ((res.statusCode === 200 && !user)) {
+        throw new ErrorNotFound('Карточка или пользователь не найдены');
+      }
 
       res.send(user);
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -89,5 +84,5 @@ module.exports.updateUser = (req, res, next) => {
     },
   )
     .then((user) => res.send(user))
-    .catch((err) => next(err));
+    .catch(next);
 };

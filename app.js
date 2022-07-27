@@ -7,14 +7,17 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 
+require('dotenv').config();
+
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const handleErrors = require('./middlewares/handleErrors');
 const index = require('./routes/index');
 
 const { PORT = 3001 } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/moviesdb', {
+mongoose.connect(process.env.BASE_DATE, {
   useNewUrlParser: true,
 });
 
@@ -42,6 +45,19 @@ app.use(index);
 app.use(errorLogger);
 
 app.use(errors());
+app.use(handleErrors);
+
+app.use((err, req, res, next) => {
+  if (err.statusCode) {
+    return res.status(err.statusCode).send({ message: err.message });
+  }
+
+  console.error(err.stack);
+
+  res.status(500).send({ message: 'Что-то пошло не так' });
+
+  return next();
+});
 
 app.listen(PORT, () => {
 });
