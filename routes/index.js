@@ -6,7 +6,6 @@ const ErrorNotFound = require('../errors/notFound');
 const {
   createUser,
   login,
-  signout,
 } = require('../controllers/users');
 
 router.get('/crash-test', () => {
@@ -28,7 +27,6 @@ router.post('/signin', celebrate({
     password: Joi.string().required().min(6),
   }),
 }), login);
-router.post('/signout', signout);
 
 router.use(auth);
 

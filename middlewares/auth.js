@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const ErrorAuth = require('../errors/errorAuth');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  const token = req.cookies.jwt;
+  const token = req.headers.authorization;
   if (!token) {
     throw new ErrorAuth('Неправильные почта или пароль');
   }

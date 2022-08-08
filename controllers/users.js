@@ -7,13 +7,10 @@ const User = require('../models/user');
 const ErrorNotFound = require('../errors/notFound');
 
 module.exports.createUser = (req, res, next) => {
-  const {
-    name,
-    email,
-    password,
-  } = req.body;
+  const { name, email, password } = req.body;
 
-  bcrypt.hash(password, 10)
+  bcrypt
+    .hash(password, 10)
     .then((hash) => User.create({
       name,
       email,
@@ -38,11 +35,9 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      });
+
       res.send({
+        token,
         user: {
           _id: user._id,
           name: user.name,
@@ -53,17 +48,10 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.signout = (req, res, next) => {
-  res.clearCookie('jwt');
-  res.send({ message: 'OK' });
-
-  next();
-};
-
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if ((res.statusCode === 200 && !user)) {
+      if (res.statusCode === 200 && !user) {
         throw new ErrorNotFound('Карточка или пользователь не найдены');
       }
 

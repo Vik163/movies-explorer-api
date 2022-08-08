@@ -9,6 +9,8 @@ const helmet = require('helmet');
 
 require('dotenv').config();
 
+const MONGO_URL = require('./config');
+
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const handleErrors = require('./middlewares/handleErrors');
 const index = require('./routes/index');
@@ -17,7 +19,7 @@ const { PORT = 3001 } = process.env;
 
 const app = express();
 
-mongoose.connect(process.env.BASE_DATE, {
+mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
 });
 
@@ -25,13 +27,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const options = {
-  origin: [
+  originName: [
     'https://localhost:3000',
     'http://localhost:3000',
     'http://vik.diplom.nomoredomains.xyz',
     'https://vik.diplom.nomoredomains.xyz',
   ],
-  credentials: true, // эта опция позволяет устанавливать куки
 };
 
 app.use('*', cors(options));
