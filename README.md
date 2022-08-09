@@ -11,4 +11,4 @@
 
  сервер - vik@84.201.152.168
  домен - api.vik.diplom.nomoredomains.xyz
-* [Ссылка на страницу](http://api.vik.diplom.nomoredomains.xyz)
+* [Ссылка на страницу](https://api.vik.diplom.nomoredomains.xyz)
