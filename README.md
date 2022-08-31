@@ -53,5 +53,6 @@
 
 ***
 
+* [Pull request](https://github.com/Vik163/movies-explorer-api/pull/1)
 * домен - api.vik.diplom.nomoredomains.xyz
 * Фронтенд - [movies-explorer-frontend](movies-explorer-frontend)
