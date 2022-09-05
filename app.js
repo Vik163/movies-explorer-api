@@ -23,9 +23,11 @@ mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
 });
 
+// Сборка пакетов ----------------------------
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Cors Доступ к определенным источникам -----------------
 const options = {
   originName: [
     'https://localhost:3000',
@@ -36,13 +38,15 @@ const options = {
 };
 
 app.use('*', cors(options));
+
 app.use(helmet());
 
 app.use(requestLogger);
 
 app.use(cookieParser());
-app.use(index);
+app.use(index); // Роуты
 
+// Обработка ошибок --------------------------------------
 app.use(errorLogger);
 
 app.use(errors());
@@ -59,6 +63,7 @@ app.use((err, req, res, next) => {
 
   return next();
 });
+// -----------------------------------------------------
 
 app.listen(PORT, () => {
 });
