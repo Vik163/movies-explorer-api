@@ -2,6 +2,7 @@ const Movie = require('../models/movie');
 const ErrorNotFound = require('../errors/notFound');
 const ErrorOwnerId = require('../errors/errorOwnerId');
 
+// Получить пользовательские фильмы ---------------
 module.exports.getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
     .then((cards) => {
@@ -10,6 +11,7 @@ module.exports.getMovies = (req, res, next) => {
     .catch(next);
 };
 
+// Сохранить фильм --------------------------------
 module.exports.createMovies = (req, res, next) => {
   const {
     country,
@@ -43,15 +45,18 @@ module.exports.createMovies = (req, res, next) => {
     .catch(next);
 };
 
+// Удалить фильм -------------------------------------
 module.exports.deleteMovies = (req, res, next) => {
   Movie.findOne({ _id: req.params._id })
     .then((card) => {
+      // Получение ошибки 404
       if ((res.statusCode === 200 && !card)) {
         throw new ErrorNotFound('Карточка или пользователь не найдены');
       }
       return Movie.findOneAndRemove({ _id: req.params._id, owner: req.user._id })
-        .populate('owner')
+        .populate('owner') // Получаю всю информацию об owner
         .then((cardOwnerId) => {
+          // Получение ошибки 403
           if (cardOwnerId === null) {
             throw new ErrorOwnerId('Попытка удалить чужую карточку');
           }

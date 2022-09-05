@@ -9,6 +9,9 @@ const {
 } = require('../controllers/movies');
 
 router.get('/', getMovies);
+
+// Валидация - библиотека celebrate
+// Добавление фильма ------------------------
 router.post('/', celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
@@ -39,6 +42,8 @@ router.post('/', celebrate({
     }),
   }),
 }), createMovies);
+
+// Удаление фильма ------------------------
 router.delete('/:_id', celebrate({
   params: Joi.object().keys({
     _id: Joi.string().hex().length(24),

@@ -10,7 +10,7 @@ module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
 
   bcrypt
-    .hash(password, 10)
+    .hash(password, 10) // Хеш пароля
     .then((hash) => User.create({
       name,
       email,
@@ -18,6 +18,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => {
       res.send({
+        // Убираю пароль
         name: user.name,
         email: user.email,
       });
@@ -27,9 +28,10 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
+  // Собственный метод схемы User для проверки почты и пароля
   User.findUserByCredentials(email, password)
     .then((user) => {
+      // Создаю токен на 7 дней, использую localStorage
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',

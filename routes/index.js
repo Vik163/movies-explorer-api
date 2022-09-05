@@ -8,11 +8,7 @@ const {
   login,
 } = require('../controllers/users');
 
-router.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
+// Валидация - библиотека celebrate
 
 router.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -21,6 +17,7 @@ router.post('/signup', celebrate({
     name: Joi.string().required().min(2).max(30),
   }),
 }), createUser);
+
 router.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().pattern(/^[\w]{1}[\w-.]*@[\w-]+\.[a-z]{2,4}$/i),
@@ -28,11 +25,12 @@ router.post('/signin', celebrate({
   }),
 }), login);
 
-router.use(auth);
+router.use(auth); // Проверка авторизации
 
 router.use('/users', require('./users'));
 router.use('/movies', require('./movies'));
 
+// Ошибка 404 -------------------------------
 router.use('*', (req, res, next) => {
   next(new ErrorNotFound('Маршрут не найден'));
 });
